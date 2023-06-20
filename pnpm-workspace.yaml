@@ -1,0 +1,4 @@
+# PNPM workspace config
+
+packages:
+    - 'packages/*'

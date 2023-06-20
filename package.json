@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx run-many --target=build",   
+    "build": "npx nx affected -t build --parallel=1",   
     "test": "nx run-many --target=test",
     "lint": "nx run-many --target=lint",
     "e2e": "nx e2e",

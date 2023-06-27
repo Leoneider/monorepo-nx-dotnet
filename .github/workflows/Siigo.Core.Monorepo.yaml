@@ -47,6 +47,10 @@ jobs:
 
     - name: Install Nx dependencies 📦️
       run: pnpm install
+    
+    - name: Mostrar información de la rama
+      run: |
+        git branch -a
 
     - name: Build 🏗️
       run: pnpm build

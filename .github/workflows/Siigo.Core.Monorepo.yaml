@@ -31,6 +31,8 @@ jobs:
     steps:
     - name: Checkout 🌱
       uses: actions/checkout@v3 
+      with:
+        fetch-depth: 0
       
     - name: Setup .NET SDK 🔧
       uses: actions/setup-dotnet@v3
@@ -53,7 +55,7 @@ jobs:
         git branch -a
 
     - name: Build 🏗️
-      run: pnpm build
+      run: pnpm affected:build
       
     - name: Test 🧪
       run: npx nx affected --target=test

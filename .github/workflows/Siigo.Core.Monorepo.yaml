@@ -4,17 +4,58 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
   pull_request:
     branches: [main]
     paths-ignore:
-      - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
-  workflow_dispatch:      
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
+  workflow_dispatch:
 jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      TARGET_BRANCH: ${{ steps.set_target_branch.outputs.TARGET_BRANCH }}
+      AFFECTED_LIST: ${{ steps.set_affected_list.outputs.AFFECTED_LIST }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js Cache
+        uses: actions/setup-node@v3
+        with:
+          registry-url: https://npm.pkg.github.com
+          node-version: lts/*
+          cache: "pnpm"
+
+      - name: Setup PNPM 📦️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install Dependencies
+        run: pnpm install --prefer-offline
+
+      - name: Set target branch as base branch
+        id: set_target_branch
+        run: echo "TARGET_BRANCH=$(git rev-parse --abbrev-ref ${{ github.ref_name }})" >> $GITHUB_OUTPUT
+
+      - name: Setup NX SHAS
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: ${{ steps.set_target_branch.outputs.TARGET_BRANCH }}
+
+      - name: Set Affected List
+        id: set_affected_list
+        run: |
+          set -eux
+          echo "AFFECTED_LIST=$(pnpm nx print-affected --select=projects --type=lib | tr -d ' ' | tr -d '\n' |  jq -Rcs 'split(",")' | jq -r -s -c '{ nodes:.[] } | @json' )" >> $GITHUB_OUTPUT
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -29,33 +70,17 @@ jobs:
       TERM: xterm
 
     steps:
-    - name: Checkout 🌱
-      uses: actions/checkout@v3 
-      with:
-        fetch-depth: 0
-      
-    - name: Setup .NET SDK 🔧
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    
-    - name: Setup Node.js 🔧
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.x
-    
-    - name: Install PNPM 📦️
-      run: npm install --global pnpm
+      - name: Setup .NET SDK 🔧
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
 
-    - name: Install Nx dependencies 📦️
-      run: pnpm install
-    
-    - name: Mostrar información de la rama
-      run: |
-        git branch -a
+      - name: Mostrar información de la rama
+        run: |
+          git branch -a
 
-    - name: Build 🏗️
-      run: pnpm affected:build
-      
-    - name: Test 🧪
-      run: npx nx affected --target=test
+      - name: Build 🏗️
+        run: pnpm affected:build
+
+      - name: Test 🧪
+        run: npx nx affected --target=test

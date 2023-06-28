@@ -27,17 +27,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup PNPM 📦️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node.js Cache
         uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com
           node-version: 18.x
           cache: "pnpm"
-
-      - name: Setup PNPM 📦️
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Install Dependencies
         run: pnpm install --prefer-offline

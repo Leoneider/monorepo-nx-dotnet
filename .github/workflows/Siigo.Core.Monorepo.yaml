@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com
-          node-version: lts/*
+          node-version: 18.x
           cache: "pnpm"
 
       - name: Setup PNPM 📦️

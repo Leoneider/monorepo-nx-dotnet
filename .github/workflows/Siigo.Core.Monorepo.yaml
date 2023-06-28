@@ -92,7 +92,7 @@ jobs:
       - name: Setup NX SHAS
         uses: nrwl/nx-set-shas@v3
         with:
-          main-branch-name: ${{ steps.set_target_branch.outputs.TARGET_BRANCH }}
+          main-branch-name: develop
           
       - name: Setup .NET SDK 🔧
         uses: actions/setup-dotnet@v3

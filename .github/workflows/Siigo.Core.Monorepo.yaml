@@ -89,11 +89,14 @@ jobs:
         id: set_target_branch
         run: echo "TARGET_BRANCH=$(git rev-parse --abbrev-ref ${{ github.ref_name }})" >> $GITHUB_OUTPUT
 
-      - name: Setup NX SHAS
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        id: setSHAs
         uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: develop
-          
+
+      - run: |
+          echo "BASE: ${{ steps.setSHAs.outputs.base }}"
+          echo "HEAD: ${{ steps.setSHAs.outputs.head }}"
+
       - name: Setup .NET SDK 🔧
         uses: actions/setup-dotnet@v3
         with:

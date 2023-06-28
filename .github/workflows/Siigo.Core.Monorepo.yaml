@@ -57,6 +57,7 @@ jobs:
           set -eux
           echo "AFFECTED_LIST=$(pnpm nx print-affected --select=projects --type=lib | tr -d ' ' | tr -d '\n' |  jq -Rcs 'split(",")' | jq -r -s -c '{ nodes:.[] } | @json' )" >> $GITHUB_OUTPUT
   build:
+    needs: setup
     name: Build
     runs-on: ubuntu-latest
     env:

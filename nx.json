@@ -37,8 +37,8 @@
     },
     "build": {
       "dependsOn": [
-        "codegen",
-        "^codegen"
+        "build",
+        "^build"
       ]
     }
   }

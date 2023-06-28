@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       TARGET_BRANCH: ${{ steps.set_target_branch.outputs.TARGET_BRANCH }}
-      AFFECTED_LIST: ${{ steps.set_affected_list.outputs.AFFECTED_LIST }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,11 +50,6 @@ jobs:
         with:
           main-branch-name: ${{ steps.set_target_branch.outputs.TARGET_BRANCH }}
 
-      - name: Set Affected List
-        id: set_affected_list
-        run: |
-          set -eux
-          echo "AFFECTED_LIST=$(pnpm nx print-affected --select=projects --type=lib | tr -d ' ' | tr -d '\n' |  jq -Rcs 'split(",")' | jq -r -s -c '{ nodes:.[] } | @json' )" >> $GITHUB_OUTPUT
   build:
     needs: setup
     name: Build

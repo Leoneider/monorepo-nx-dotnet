@@ -84,12 +84,9 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Install Dependencies 🚧
         run: pnpm install --prefer-offline
 
       - name: Test 🧪
         run: pnpm affected:test
-
-      - name: SonarScanner 🚧
-        run: pnpm affected:sonar

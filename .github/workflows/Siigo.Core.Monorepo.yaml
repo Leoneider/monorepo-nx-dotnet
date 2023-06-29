@@ -74,16 +74,17 @@ jobs:
 
       - name: Build 🏗️
         run: pnpm affected:build
-
-      - name: Test 🧪
-        run: npx nx affected --target=test
-
   test:
     name: Test
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup PNPM 📦️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
       - name: Install Dependencies 🚧
         run: pnpm install --prefer-offline
 
